@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="./vue.js"></script>
+	<title>Document</title>
+	<style>
+		.basic {
+			background-color: #666;
+			font-weight: bold;
+		}
+		.active {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<!-- <div :style="{backgroundColor: selected ? 'orange': '#ddd'}" 
+			v-for="(item, i) in list"
+			:key="i"
+			@click="selected = !selected"
+			>{{item}}</div> -->
+		<!-- <div :class="{basic:true, active: selected2 == true}" 
+			v-for="item in list"
+			:key="item"
+			@click="selected2 = true">
+			{{item}}</div> -->
+		<div>
+			<h2>自定义双向绑定组件</h2>
+			<div v-if="list.length<=0">暂无数据</div>
+			<div v-for="(item, i) in list" :key="i" v-else>{{item}}</div>
+		</div>
+
+		<item-list v-model="message" @add-list="addList"></item-list>
+	</div>
+
+
+
+
+	<script>
+		Vue.component('item-list', {
+			props: {
+				value: {
+					type: String,
+					default: ''
+				}
+			},
+			template: `
+				<div>
+					<input type="text" :value="value" @input="onInput" placeholder="请输入关键词"/>
+					<button @click="add">新增</button>
+				</div>
+			`,
+			methods: {
+				onInput(e) {
+					this.$emit('input', e.target.value);
+				},
+				add() {
+					this.$emit('add-list')
+				}
+			},
+		});
+
+		const app = new Vue({
+			el: '#app',
+			data() {
+				return {
+					selected: false,
+					selected2: false,
+					message: '',
+					list: [],
+				}
+			},
+			methods: {
+				addList() {
+					this.list.push(this.message);
+					this.message = '';
+				}
+			},
+		});
+
+
+	</script>
+</body>
+</html>
